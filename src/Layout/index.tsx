@@ -1,13 +1,13 @@
-import Header from "../components/Header";
-import { Outlet } from "react-router-dom";
+import DockBar from "../components/DockBar"
+import { Outlet } from "react-router-dom"
 
 const LayOut = () => {
   return (
     <>
-      <Header />
       <Outlet />
+      <DockBar />
     </>
-  );
-};
+  )
+}
 
-export default LayOut;
+export default LayOut

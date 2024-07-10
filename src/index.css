@@ -7,6 +7,10 @@
   box-sizing: border-box;
 }
 
+body {
+  background: #fff;
+}
+
 a {
   text-decoration: none;
 }
@@ -17,4 +21,22 @@ li {
 
 em {
   font-style: normal;
+}
+
+input,
+button {
+  outline: none;
+  border: 0;
+}
+
+label {
+  font-size: 12px;
+  color: #828282;
+}
+
+input {
+  flex: 1;
+  padding: 10px;
+  border: 0.5px solid #ccc;
+  border-radius: 4px;
 }
