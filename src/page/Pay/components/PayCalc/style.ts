@@ -52,7 +52,7 @@ export const RemoveBtn = styled.button`
   height: 20px;
   margin: auto;
   border-radius: 50%;
-  background-color: #ff4444;
+  background-color: #f17373;
   position: relative;
   cursor: pointer;
 
