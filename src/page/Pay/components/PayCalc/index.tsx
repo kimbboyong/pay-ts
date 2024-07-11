@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { InputBox } from "../../../../style/global";
-import { AddBtn, CalcForm, InputScroll, RemoveBtn } from "./style";
+import { AddBtn, CalcForm, EndBtn, InputScroll, RemoveBtn } from "./style";
 
 const PayCalc = () => {
   const addData = [
@@ -53,6 +53,7 @@ const PayCalc = () => {
         <AddBtn type="button" onClick={handleAddClick}>
           추가
         </AddBtn>
+        <EndBtn type="button">적용</EndBtn>
       </CalcForm>
     </>
   );
