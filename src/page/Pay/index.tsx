@@ -18,8 +18,11 @@ import {
 } from "./style";
 import { useNavigate } from "react-router-dom";
 import { ModalHookType } from "../../types/ModalHookType";
+import useUserInfo from "../../hooks/useUserInfo";
 
 const Pay = () => {
+  const userData = useUserInfo();
+
   const navigate = useNavigate();
 
   const { isOpenModal, clickModal, closeModal }: ModalHookType = useOpenModal();
@@ -51,7 +54,7 @@ const Pay = () => {
 
             <Content>
               <PayInner>
-                <Name>혀기</Name>
+                <Name>{userData?.displayName}</Name>
                 <Money>
                   <p className="moneyMax">600,000원</p>
                   <p className="moneyRemain">300,000원</p>
