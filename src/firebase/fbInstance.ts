@@ -1,5 +1,10 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import {
+  getAuth,
+  setPersistence,
+  browserLocalPersistence,
+} from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCWVAGvWTD9Mc-jPCSaSHmP22UFWgMFCKI",
@@ -11,4 +16,17 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const authService = getAuth();
+const authService = getAuth(app);
+
+const auth = getAuth(app);
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log(" 성공");
+  })
+  .catch((error) => {
+    console.error(" 실패:", error);
+  });
+
+const db = getFirestore(app);
+
+export { authService, db };
