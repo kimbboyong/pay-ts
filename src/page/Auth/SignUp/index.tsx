@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { AuthButton, AuthForm, AuthInput } from "../style";
+import { AuthButton, AuthForm, AuthInput, Inner } from "../style";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { authService } from "../../../firebase/fbInstance";
 import { useNavigate } from "react-router-dom";
+import Header from "../../../components/Header";
+import { InputBox } from "../../../style/global";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -40,27 +42,48 @@ const SignUp = () => {
   };
 
   return (
-    <AuthForm onSubmit={onSubmit}>
-      <AuthInput
-        type="text"
-        name="userName"
-        value={userName}
-        onChange={loginChange}
-      />
-      <AuthInput
-        type="email"
-        name="email"
-        value={email}
-        onChange={loginChange}
-      />
-      <AuthInput
-        type="password"
-        name="password"
-        value={password}
-        onChange={loginChange}
-      />
-      <AuthButton type="submit">회원가입</AuthButton>
-    </AuthForm>
+    <>
+      <Header title="회원가입" />
+      <AuthForm onSubmit={onSubmit}>
+        <Inner>
+          <InputBox>
+            <AuthInput
+              type="text"
+              name="userName"
+              value={userName}
+              onChange={loginChange}
+              placeholder="닉네임"
+            />
+          </InputBox>
+          <InputBox>
+            <AuthInput
+              type="email"
+              name="email"
+              value={email}
+              onChange={loginChange}
+              placeholder="이메일"
+            />
+          </InputBox>
+          <InputBox>
+            <AuthInput
+              type="password"
+              name="password"
+              value={password}
+              onChange={loginChange}
+              placeholder="비밀번호"
+            />
+          </InputBox>
+        </Inner>
+        <AuthButton type="submit">회원가입</AuthButton>
+        <AuthButton
+          type="submit"
+          className="backBtn"
+          onClick={() => navigate(-1)}
+        >
+          뒤로가기
+        </AuthButton>
+      </AuthForm>
+    </>
   );
 };
 
