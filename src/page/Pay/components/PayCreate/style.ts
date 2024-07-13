@@ -33,3 +33,24 @@ export const PaySubmit = styled.button`
     color: #f17373;
   }
 `;
+
+export const PreviewChoice = styled.div`
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  padding: 15px 10px;
+  background-color: #fff;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 3px 2px 12px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  left: 0;
+  bottom: calc(100% - 120px);
+  z-index: 2;
+`;
+
+export const PreviewList = styled.div`
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 10px 0;
+`;
