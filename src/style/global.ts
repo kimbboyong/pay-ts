@@ -22,3 +22,8 @@ export const InputBox = styled.div`
     margin-bottom: 0;
   }
 `;
+export const RadioBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+`;

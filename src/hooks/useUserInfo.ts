@@ -15,11 +15,12 @@ export default function useUserInfo() {
     const unsubscribe = authService.onAuthStateChanged(
       (currentUser: User | null) => {
         if (currentUser) {
-          setUser({
+          const userInfo: UserType = {
             displayName: currentUser.displayName || undefined,
             email: currentUser.email || undefined,
             uid: currentUser.uid,
-          });
+          };
+          setUser(userInfo);
         } else {
           setUser(null);
         }
@@ -28,6 +29,10 @@ export default function useUserInfo() {
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    console.log("User info updated:", user?.displayName);
+  }, [user]);
 
   return user;
 }
