@@ -56,6 +56,12 @@ export const PayList = styled.li`
   }
 `;
 
+export const RadioState = styled.div`
+  position: absolute;
+  right: 15px;
+  top: 15px;
+`;
+
 export const Content = styled.div`
   display: flex;
   justify-content: space-between;

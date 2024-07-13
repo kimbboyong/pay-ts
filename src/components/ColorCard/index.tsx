@@ -1,17 +1,16 @@
-import { Container } from "./style"
+import { Container } from "./style";
 
 type CardType = {
-  CardValue?: string
-  color?: string
-  position?: string
-  size?: string
-}
-const ColorCard = ({ CardValue, color, position, size }: CardType) => {
+  CardValue?: string;
+  color?: string;
+  size?: string;
+};
+const ColorCard = ({ CardValue, color, size }: CardType) => {
   return (
-    <Container color={color} position={position} size={size}>
+    <Container color={color ? color : ""} size={size}>
       <em>{CardValue}</em>
     </Container>
-  )
-}
+  );
+};
 
-export default ColorCard
+export default ColorCard;

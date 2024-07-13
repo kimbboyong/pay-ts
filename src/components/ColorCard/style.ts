@@ -1,19 +1,11 @@
-import styled from "styled-components"
+import styled from "styled-components";
 
 interface CardValueProps {
-  CardValue?: string
-  position?: string
-  size?: string
+  CardValue?: string;
+  size?: string;
 }
 
 export const Container = styled.div<CardValueProps>`
-  ${(props) =>
-    props.position &&
-    `
-    position: absolute;
-    top: 15px;
-    right: 15px;
-  `}
   em {
     display: flex;
     justify-content: center;
@@ -23,18 +15,28 @@ export const Container = styled.div<CardValueProps>`
     font-size: 12px;
     color: #fff;
     background-color: ${(props) => {
-      if (props.color === "blue") return "#4392ff"
-      if (props.color === "red") return "#f17373"
-      if (props.color === "yellow") return "#e2c235"
-      if (props.color === "green") return "#91c66c"
-      return "#fff"
+      if (props.color === "blue") return "#4392ff";
+      if (props.color === "red") return "#f17373";
+      if (props.color === "yellow") return "#e2c235";
+      if (props.color === "green") return "#91c66c";
+      if (props.color === "완료") return "#4392ff";
+      if (props.color === "진행중") return "#f17373";
+      return "#fff";
     }};
 
-    ${(props) =>
-      props.size === "full" &&
-      `
+    ${(props) => {
+      if (props.size === "full") {
+        return `
       width:100%;
-      padding: 15px;    
-  `}
+      padding: 15px;   
+    `;
+      }
+      if (props.size === "free") {
+        return `
+    width: auto;
+    
+  `;
+      }
+    }}
   }
-`
+`;

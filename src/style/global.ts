@@ -10,13 +10,20 @@ export const Container = styled.div`
 
 export const Wrap = styled.div`
   padding: 80px 15px;
+  height: 100%;
 `;
 export const InputBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5px;
   margin-bottom: 10px;
+  position: relative;
   &:last-child {
     margin-bottom: 0;
   }
+`;
+export const RadioBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
 `;
