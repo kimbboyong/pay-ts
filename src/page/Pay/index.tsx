@@ -28,7 +28,7 @@ interface PayDataType {
   host: string;
   maxMoney: string;
   minMoney: string;
-  member: string[];
+  member: Array<{ value: string; color: string }>;
   radioState: string;
   userUid: string;
   date: string;
@@ -63,6 +63,8 @@ const Pay = () => {
     fetchPayments();
   }, []);
 
+  console.log(paymentsData);
+
   return (
     <>
       <Header title="엔빵계산" />
@@ -76,29 +78,38 @@ const Pay = () => {
           </PayTitle>
 
           <PayUl>
-            {paymentsData.map((payment) => (
-              <PayList onClick={handleListModal} key={payment.id}>
-                <RadioState>
-                  <ColorCard CardValue={payment.radioState} color="green" />
-                </RadioState>
+            {paymentsData &&
+              paymentsData.map((payment) => (
+                <PayList onClick={handleListModal} key={payment.id}>
+                  <RadioState>
+                    <ColorCard
+                      CardValue={payment.radioState}
+                      color={payment.radioState}
+                    />
+                  </RadioState>
 
-                <Content>
-                  <PayInner>
-                    <Name>{payment.host}</Name>
-                    <Money>
-                      <p className="moneyMax">{payment.maxMoney}원</p>
-                      <p className="moneyRemain">{payment.minMoney}원</p>
-                    </Money>
-                    <Member>
-                      {payment.member.map((member, idx) => (
-                        <ColorCard key={idx} CardValue={member} color="blue" />
-                      ))}
-                    </Member>
-                  </PayInner>
-                  <Date>{payment.date}</Date>
-                </Content>
-              </PayList>
-            ))}
+                  <Content>
+                    <PayInner>
+                      <Name>{payment.host}</Name>
+                      <Money>
+                        <p className="moneyMax">{payment.maxMoney}원</p>
+                        <p className="moneyRemain">{payment.minMoney}원</p>
+                      </Money>
+                      <Member>
+                        {payment.member.slice(0, 4).map((member, idx) => (
+                          <ColorCard
+                            key={idx}
+                            CardValue={member.value}
+                            color={member.color}
+                          />
+                        ))}
+                        {payment.member.length > 4 && <span>...</span>}
+                      </Member>
+                    </PayInner>
+                    <Date>{payment.date}</Date>
+                  </Content>
+                </PayList>
+              ))}
           </PayUl>
 
           <PayCreateBtn onClick={() => navigate("/pay/create")} />

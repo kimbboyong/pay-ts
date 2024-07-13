@@ -7,7 +7,7 @@ type CardType = {
 };
 const ColorCard = ({ CardValue, color, size }: CardType) => {
   return (
-    <Container color={color} size={size}>
+    <Container color={color ? color : ""} size={size}>
       <em>{CardValue}</em>
     </Container>
   );
