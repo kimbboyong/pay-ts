@@ -2,18 +2,10 @@ import styled from "styled-components";
 
 interface CardValueProps {
   CardValue?: string;
-  position?: string;
   size?: string;
 }
 
 export const Container = styled.div<CardValueProps>`
-  ${(props) =>
-    props.position &&
-    `
-    position: absolute;
-    top: 15px;
-    right: 15px;
-  `}
   em {
     display: flex;
     justify-content: center;
@@ -27,6 +19,8 @@ export const Container = styled.div<CardValueProps>`
       if (props.color === "red") return "#f17373";
       if (props.color === "yellow") return "#e2c235";
       if (props.color === "green") return "#91c66c";
+      if (props.CardValue === "완료") return "#4392ff";
+      if (props.CardValue === "진행중") return "#e2c235";
       return "#fff";
     }};
 
