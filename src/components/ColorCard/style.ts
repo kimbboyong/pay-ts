@@ -19,8 +19,8 @@ export const Container = styled.div<CardValueProps>`
       if (props.color === "red") return "#f17373";
       if (props.color === "yellow") return "#e2c235";
       if (props.color === "green") return "#91c66c";
-      if (props.CardValue === "완료") return "#4392ff";
-      if (props.CardValue === "진행중") return "#e2c235";
+      if (props.color === "완료") return "#4392ff";
+      if (props.color === "진행중") return "#f17373";
       return "#fff";
     }};
 

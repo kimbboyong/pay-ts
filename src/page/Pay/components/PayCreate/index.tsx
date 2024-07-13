@@ -3,7 +3,15 @@ import Header from "../../../../components/Header";
 import useOpenModal from "../../../../hooks/useModalOpen";
 import { InputBox, RadioBox, Wrap } from "../../../../style/global";
 import { ModalHookType } from "../../../../types/ModalHookType";
-import { Divide, FormInner, PayBtn, PayForm, PaySubmit } from "./style";
+import {
+  Divide,
+  FormInner,
+  PayBtn,
+  PayForm,
+  PaySubmit,
+  PreviewChoice,
+  PreviewList,
+} from "./style";
 import Modal from "../../../../components/Modal";
 import { useNavigate } from "react-router-dom";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
@@ -69,22 +77,24 @@ const PayCreate = () => {
     }
   };
 
-  // const payOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  //   const { value } = e.currentTarget;
-  //   if (e.key === "Enter" && e.nativeEvent.isComposing === false) {
-  //     e.preventDefault();
-  //     if (value === "") {
-  //       alert("멤버이름을 입력해주세요.");
-  //       return;
-  //     }
-  //     setMember([...member, value]);
-  //     e.currentTarget.value = "";
-  //   }
-  // };
+  const payOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && e.nativeEvent.isComposing === false) {
+      e.preventDefault();
+    }
+  };
 
   const paySubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (
+      host === "" ||
+      maxMoney === "" ||
+      minMoney === "" ||
+      radioState === ""
+    ) {
+      alert("공백ㅈㅅ");
+      return;
+    }
     const payData: PayDataType = {
       host: host,
       maxMoney: maxMoney,
@@ -132,6 +142,8 @@ const PayCreate = () => {
     }
   };
 
+  const handleDeleteClick = () => {};
+
   useEffect(() => {
     if (memberValue) {
       const timer = setTimeout(() => setPreview(true), 500);
@@ -141,7 +153,6 @@ const PayCreate = () => {
     }
   }, [memberValue]);
 
-  console.log(member);
   return (
     <>
       {isOpenModal && <Modal closeModal={closeModal} modalType={modalType} />}
@@ -187,10 +198,10 @@ const PayCreate = () => {
                 name="member"
                 onChange={onPreview}
                 value={memberValue}
-                // onKeyDown={payOnKeyDown}
+                onKeyDown={payOnKeyDown}
               />
               {preview && (
-                <>
+                <PreviewChoice>
                   <div onClick={() => handlePreviewClick("blue")}>
                     <ColorCard color="blue" CardValue={memberValue} />
                   </div>
@@ -203,8 +214,16 @@ const PayCreate = () => {
                   <div onClick={() => handlePreviewClick("green")}>
                     <ColorCard color="green" CardValue={memberValue} />
                   </div>
-                </>
+                </PreviewChoice>
               )}
+
+              <PreviewList>
+                {member.map((member, idx) => (
+                  <div key={idx} onClick={() => handleDeleteClick()}>
+                    <ColorCard CardValue={member.value} color={member.color} />
+                  </div>
+                ))}
+              </PreviewList>
             </InputBox>
             <InputBox>
               <label>상태</label>
@@ -215,7 +234,7 @@ const PayCreate = () => {
                     id="complete"
                     name="radioState"
                     onChange={payOnChange}
-                    value="정산완료"
+                    value="완료"
                   />
                   <label htmlFor="complete">완료</label>
                 </RadioBox>
@@ -225,7 +244,7 @@ const PayCreate = () => {
                     id="Incomplete"
                     name="radioState"
                     onChange={payOnChange}
-                    value="정산필요"
+                    value="진행중"
                   />
                   <label htmlFor="Incomplete">진행중</label>
                 </RadioBox>
