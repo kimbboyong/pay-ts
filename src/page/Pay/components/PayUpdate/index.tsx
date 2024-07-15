@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "../../../../components/Header";
 import { InputBox, RadioBox, Wrap } from "../../../../style/global";
 import {
@@ -9,49 +9,53 @@ import {
   PaySubmit,
   PreviewChoice,
   PreviewList,
-} from "./style";
-import { useNavigate } from "react-router-dom";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "../../../../firebase/fbInstance";
-import useUserInfo from "../../../../hooks/useUserInfo";
-import ColorCard from "../../../../components/ColorCard";
+} from "../PayCreate/style";
 
-interface PayDataType {
-  host: string;
-  maxMoney: string;
-  minMoney: string;
-  member: Array<{ value: string; color: string }>;
-  radioState: string;
+import useGetPayments, {
+  PayDataType,
+} from "../../../../hooks/services/queries/useGetPayments";
+
+import { useEffect, useState } from "react";
+
+import ColorCard from "../../../../components/ColorCard";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../../../../firebase/fbInstance";
+import useOpenModal from "../../../../hooks/useModalOpen";
+import { ModalHookType } from "../../../../types/ModalHookType";
+import Modal from "../../../../components/Modal";
+
+interface Param {
+  id: string;
 }
 
-const PayCreate = () => {
+const PayUpdate = () => {
   const navigate = useNavigate();
-  const userData = useUserInfo();
-  const userUid = userData?.uid;
+  const params = useParams<Record<string, string | undefined>>();
+  const param: Param = { id: params.id ?? "" };
+
+  const { isOpenModal, clickModal, closeModal }: ModalHookType = useOpenModal();
+  const [modalType, setModalType] = useState("");
+  const [selectedId, setSelectedId] = useState<string>("");
+
+  const [updateData, setUpdateData] = useState<PayDataType | undefined>(
+    undefined
+  );
+  const { data, error, isLoading } = useGetPayments();
 
   const [host, setHost] = useState("");
   const [maxMoney, setMaxMoney] = useState("");
   const [minMoney, setMinMoney] = useState("");
-
   const [memberValue, setMemberValue] = useState("");
   const [member, setMember] = useState<Array<{ value: string; color: string }>>(
     []
   );
-
   const [radioState, setRadioState] = useState<string>("");
   const [preview, setPreview] = useState(false);
-
-  const date = new Date();
-  const year = date.getFullYear() + "년";
-  const month = String(date.getMonth() + 1).padStart(2, "0") + "월";
-  const day = String(date.getDate()).padStart(2, "0") + "일";
-
-  const formattedDate = `${year} ${month} ${day}`;
 
   const payOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = e.target;
     const numberValue = value.replace(/,/g, "");
-    const checkedValue = checked;
+
     if (name === "host") {
       setHost(value);
     } else if (name === "maxMoney") {
@@ -77,40 +81,9 @@ const PayCreate = () => {
     }
   };
 
-  const paySubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (
-      host === "" ||
-      maxMoney === "" ||
-      minMoney === "" ||
-      radioState === ""
-    ) {
-      alert("공백ㅈㅅ");
-      return;
-    }
-    const payData: PayDataType = {
-      host: host,
-      maxMoney: maxMoney,
-      minMoney: minMoney,
-      member: member,
-      radioState: radioState,
-    };
-    if (userUid) {
-      try {
-        const docRef = await addDoc(collection(db, "payments"), {
-          ...payData,
-          userUid: userUid,
-          date: formattedDate,
-        });
-        alert("저장 댐");
-        navigate("/pay");
-      } catch (e) {
-        console.error("에러임 ㅋ", e);
-        alert("저장 실패");
-      }
-    } else {
-      alert("로그인 하셈");
+  const preventEnterKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
     }
   };
 
@@ -120,23 +93,66 @@ const PayCreate = () => {
   };
 
   const handlePreviewClick = (color: string) => {
-    setMember([...member, { value: memberValue, color }]);
+    const newMember = { value: memberValue, color };
+    setMember([...member, newMember]);
     setMemberValue("");
     setPreview(false);
-  };
 
-  // const handleCalcModal = () => {
-  //   setModalType("calcModal");
-  //   clickModal();
-  // };
-
-  const preventEnterKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
+    if (updateData) {
+      const updatedMembers = [...(updateData.member || []), newMember];
+      setUpdateData({ ...updateData, member: updatedMembers });
     }
   };
 
-  const handleDeleteClick = () => {};
+  const handleDelete = (id: number) => {
+    const filterData = member.filter((i, idx) => idx !== id);
+    setMember(filterData);
+  };
+
+  const handleCalc = () => {
+    setModalType("calcModal");
+    clickModal();
+  };
+
+  const paySubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (updateData) {
+      const docRef = doc(db, "payments", param.id);
+
+      try {
+        await updateDoc(docRef, {
+          host: host,
+          maxMoney: maxMoney,
+          minMoney: minMoney,
+          member: member,
+          radioState: radioState,
+        });
+        navigate("/pay");
+      } catch (error) {
+        console.error("오류임 ㅋ", error);
+      }
+    } else {
+      console.error("업데이트 할게없음");
+    }
+  };
+
+  useEffect(() => {
+    if (data && param.id) {
+      const filterData = data.find((item) => item.id === param.id);
+      setUpdateData(filterData);
+      setHost(filterData?.host || "");
+      setMaxMoney(filterData?.maxMoney || "");
+      setMinMoney(filterData?.minMoney || "");
+      setRadioState(filterData?.radioState || "");
+    }
+  }, [data, param.id]);
+
+  useEffect(() => {
+    if (updateData) {
+      setMember(updateData.member || []);
+    }
+  }, [updateData]);
 
   useEffect(() => {
     if (memberValue) {
@@ -149,7 +165,8 @@ const PayCreate = () => {
 
   return (
     <>
-      <Header title="엔빵리스트 추가" />
+      <Header title="엔빵리스트 수정" />
+      {isOpenModal && <Modal closeModal={closeModal} modalType={modalType} />}
       <Wrap>
         <PayForm onSubmit={paySubmit}>
           <FormInner>
@@ -159,6 +176,7 @@ const PayCreate = () => {
                 type="text"
                 name="host"
                 value={host}
+                placeholder={host}
                 onChange={payOnChange}
                 onKeyDown={preventEnterKey}
               />
@@ -181,6 +199,7 @@ const PayCreate = () => {
                 value={minMoney}
                 onChange={payOnChange}
                 onKeyDown={preventEnterKey}
+                onClick={handleCalc}
               />
             </InputBox>
 
@@ -212,7 +231,7 @@ const PayCreate = () => {
 
               <PreviewList>
                 {member.map((member, idx) => (
-                  <div key={idx} onClick={() => handleDeleteClick()}>
+                  <div key={idx} onClick={() => handleDelete(idx)}>
                     <ColorCard CardValue={member.value} color={member.color} />
                   </div>
                 ))}
@@ -228,6 +247,7 @@ const PayCreate = () => {
                     name="radioState"
                     onChange={payOnChange}
                     value="완료"
+                    checked={updateData?.radioState === "완료" ? true : false}
                   />
                   <label htmlFor="complete">완료</label>
                 </RadioBox>
@@ -238,6 +258,7 @@ const PayCreate = () => {
                     name="radioState"
                     onChange={payOnChange}
                     value="진행중"
+                    checked={updateData?.radioState === "진행중" ? true : false}
                   />
                   <label htmlFor="Incomplete">진행중</label>
                 </RadioBox>
@@ -245,7 +266,7 @@ const PayCreate = () => {
             </InputBox>
           </FormInner>
           <PayBtn>
-            <PaySubmit type="submit">추가하기</PaySubmit>
+            <PaySubmit type="submit">수정하기</PaySubmit>
             <PaySubmit
               type="button"
               className="backBtn"
@@ -260,4 +281,4 @@ const PayCreate = () => {
   );
 };
 
-export default PayCreate;
+export default PayUpdate;
