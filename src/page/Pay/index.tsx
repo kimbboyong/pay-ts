@@ -20,55 +20,34 @@ import {
 import { useNavigate } from "react-router-dom";
 import { ModalHookType } from "../../types/ModalHookType";
 import useUserInfo from "../../hooks/useUserInfo";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../firebase/fbInstance";
-
-interface PayDataType {
-  id: string;
-  host: string;
-  maxMoney: string;
-  minMoney: string;
-  member: Array<{ value: string; color: string }>;
-  radioState: string;
-  userUid: string;
-  date: string;
-}
+import useGetPayments from "../../hooks/services/queries/useGetPayments";
 
 const Pay = () => {
   const userData = useUserInfo();
   const navigate = useNavigate();
 
+  const { data, error, isLoading } = useGetPayments();
+
   const { isOpenModal, clickModal, closeModal }: ModalHookType = useOpenModal();
   const [modalType, setModalType] = useState("");
-  const [paymentsData, setPaymentsData] = useState<PayDataType[]>([]);
+  const [selectedId, setSelectedId] = useState<string>("");
 
-  const handleListModal = () => {
+  const handleListModal = (id: string) => {
     setModalType("listModal");
+    setSelectedId(id);
     clickModal();
   };
-
-  useEffect(() => {
-    const fetchPayments = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "payments"));
-        const paymentsData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as PayDataType[];
-        setPaymentsData(paymentsData);
-      } catch (e) {
-        console.error("데이터 가져오기 실패", e);
-      }
-    };
-    fetchPayments();
-  }, []);
-
-  console.log(paymentsData);
 
   return (
     <>
       <Header title="엔빵계산" />
-      {isOpenModal && <Modal closeModal={closeModal} modalType={modalType} />}
+      {isOpenModal && (
+        <Modal
+          closeModal={closeModal}
+          modalType={modalType}
+          selectedId={selectedId}
+        />
+      )}
       {userData ? (
         <Wrap>
           <PayTitle>
@@ -78,9 +57,12 @@ const Pay = () => {
           </PayTitle>
 
           <PayUl>
-            {paymentsData &&
-              paymentsData.map((payment) => (
-                <PayList onClick={handleListModal} key={payment.id}>
+            {data &&
+              data.map((payment) => (
+                <PayList
+                  onClick={() => handleListModal(payment.id)}
+                  key={payment.id}
+                >
                   <RadioState>
                     <ColorCard
                       CardValue={payment.radioState}

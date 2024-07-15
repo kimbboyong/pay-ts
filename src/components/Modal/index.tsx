@@ -11,13 +11,16 @@ import {
 type Props = {
   closeModal?: () => void;
   modalType?: string;
+  selectedId?: string;
 };
-const Modal = ({ closeModal, modalType }: Props) => {
+const Modal = ({ closeModal, modalType, selectedId }: Props) => {
   return (
     <ModalWrap>
       <ModalBackground onClick={closeModal} />
       <ModalContainer>
-        {modalType === "listModal" && <PayChoice />}
+        {modalType === "listModal" && selectedId && (
+          <PayChoice selectedId={selectedId} />
+        )}
         {modalType === "calcModal" && <PayCalc />}
 
         <ModalCloseBtn onClick={closeModal}>닫기</ModalCloseBtn>
