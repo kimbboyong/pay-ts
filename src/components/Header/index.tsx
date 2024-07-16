@@ -19,7 +19,6 @@ const Header = ({ title }: TitleType) => {
         <HeaderTitle title={title} />
 
         <HeaderInfo>
-          <span>{userData ? userData.displayName : ""}</span>
           {userData ? <span onClick={handleLogout}>로그아웃</span> : ""}
         </HeaderInfo>
       </Inner>

@@ -23,6 +23,7 @@ import { db } from "../../../../firebase/fbInstance";
 import useOpenModal from "../../../../hooks/useModalOpen";
 import { ModalHookType } from "../../../../types/ModalHookType";
 import Modal from "../../../../components/Modal";
+import Swal from "sweetalert2";
 
 interface Param {
   id: string;
@@ -105,7 +106,7 @@ const PayUpdate = () => {
   };
 
   const handleDelete = (id: number) => {
-    const filterData = member.filter((i, idx) => idx !== id);
+    const filterData = member.filter((_, idx) => idx !== id);
     setMember(filterData);
   };
 
@@ -128,7 +129,12 @@ const PayUpdate = () => {
           member: member,
           radioState: radioState,
         });
-        navigate("/pay");
+        Swal.fire({
+          text: "수정댐",
+          icon: "success",
+        }).then(() => {
+          navigate("/pay");
+        });
       } catch (error) {
         console.error("오류임 ㅋ", error);
       }

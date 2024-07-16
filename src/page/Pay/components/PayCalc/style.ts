@@ -9,7 +9,7 @@ export const CalcForm = styled.form`
 `;
 
 export const InputScroll = styled.div`
-  max-height: 400px;
+  max-height: 350px;
   overflow-y: auto;
   margin-bottom: 30px;
 `;
