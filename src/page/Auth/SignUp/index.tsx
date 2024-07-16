@@ -35,7 +35,7 @@ const SignUp = () => {
         displayName: userName,
       });
 
-      navigate("/");
+      navigate("/pay");
     } catch (error) {
       console.log(error);
     }
