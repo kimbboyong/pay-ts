@@ -8,6 +8,7 @@ export interface PayDataType {
   maxMoney: string;
   minMoney: string;
   member: Array<{ value: string; color: string }>;
+  paymentArr: Array<{ addPay: string; addPayName: string }>;
   radioState: string;
   userUid: string;
   date: string;

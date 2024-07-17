@@ -15,12 +15,14 @@ import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../../../firebase/fbInstance";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import ColorCard from "../../../../components/ColorCard";
+import Swal from "sweetalert2";
 
 interface PayDataType {
   host: string;
   maxMoney: string;
   minMoney: string;
   member: Array<{ value: string; color: string }>;
+  paymentArr: Array<{ addPay: string; addPayName: string }>;
   radioState: string;
 }
 
@@ -37,6 +39,9 @@ const PayCreate = () => {
   const [member, setMember] = useState<Array<{ value: string; color: string }>>(
     []
   );
+  const [paymentArr, setPaymentArr] = useState<
+    Array<{ addPay: string; addPayName: string }>
+  >([{ addPay: "", addPayName: "" }]);
 
   const [radioState, setRadioState] = useState<string>("");
   const [preview, setPreview] = useState(false);
@@ -86,7 +91,10 @@ const PayCreate = () => {
       minMoney === "" ||
       radioState === ""
     ) {
-      alert("공백ㅈㅅ");
+      Swal.fire({
+        text: "디진다 공백",
+        icon: "error",
+      });
       return;
     }
     const payData: PayDataType = {
@@ -94,6 +102,7 @@ const PayCreate = () => {
       maxMoney: maxMoney,
       minMoney: minMoney,
       member: member,
+      paymentArr: paymentArr,
       radioState: radioState,
     };
     if (userUid) {
@@ -103,8 +112,12 @@ const PayCreate = () => {
           userUid: userUid,
           date: formattedDate,
         });
-        alert("저장 댐");
-        navigate("/pay");
+        Swal.fire({
+          text: "만듬",
+          icon: "success",
+        }).then(() => {
+          navigate("/pay");
+        });
       } catch (e) {
         console.error("에러임 ㅋ", e);
         alert("저장 실패");
@@ -124,11 +137,6 @@ const PayCreate = () => {
     setMemberValue("");
     setPreview(false);
   };
-
-  // const handleCalcModal = () => {
-  //   setModalType("calcModal");
-  //   clickModal();
-  // };
 
   const preventEnterKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
