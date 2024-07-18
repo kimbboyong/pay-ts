@@ -3,8 +3,16 @@ import { AuthButton, AuthForm, AuthInput, ErrorMessage, Inner } from "../style";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { authService } from "../../../firebase/fbInstance";
 import { useNavigate } from "react-router-dom";
-import { InputBox } from "../../../style/global";
-import Header from "../../../components/Header";
+
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import PersonIcon from "@mui/icons-material/Person";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { createTheme } from "@mui/material";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -43,36 +51,74 @@ const Login = () => {
   };
 
   return (
-    <>
-      <Header title="로그인" />
-      <AuthForm onSubmit={LoginSubmit}>
-        <Inner>
-          <InputBox>
-            <AuthInput
-              type="email"
-              name="email"
-              value={email}
-              onChange={loginChange}
-              placeholder="이메일"
-            />
-          </InputBox>
-          <InputBox>
-            <AuthInput
-              type="password"
-              name="password"
-              value={password}
-              onChange={loginChange}
-              placeholder="비밀번호"
-            />
-          </InputBox>
+    <Container
+      component="main"
+      maxWidth="xs"
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        height: "100%",
+      }}
+    >
+      <CssBaseline />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
+          <PersonIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          로그인
+        </Typography>
+        <Box component="form" onSubmit={LoginSubmit} noValidate sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="이메일"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            onChange={loginChange}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="비밀번호"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            onChange={loginChange}
+          />
           {error && <ErrorMessage>{error}</ErrorMessage>}
-        </Inner>
-        <AuthButton type="submit">로그인</AuthButton>
-        <AuthButton type="button" onClick={() => navigate("/auth/signup")}>
-          회원가입
-        </AuthButton>
-      </AuthForm>
-    </>
+
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            로그인
+          </Button>
+          <Button
+            type="button"
+            fullWidth
+            variant="contained"
+            sx={{ mb: 2, bgcolor: "text.secondary" }}
+            onClick={() => navigate("/auth/signup")}
+          >
+            회원가입
+          </Button>
+        </Box>
+      </Box>
+    </Container>
   );
 };
 

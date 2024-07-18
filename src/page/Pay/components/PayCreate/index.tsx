@@ -16,6 +16,15 @@ import { db } from "../../../../firebase/fbInstance";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import ColorCard from "../../../../components/ColorCard";
 import Swal from "sweetalert2";
+import {
+  Box,
+  Button,
+  Container,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  TextField,
+} from "@mui/material";
 
 interface PayDataType {
   host: string;
@@ -158,7 +167,128 @@ const PayCreate = () => {
   return (
     <>
       <Header title="엔빵리스트 추가" />
-      <Wrap>
+      <Container component="main" maxWidth="xs" sx={{ mt: 10 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Box component="form" noValidate sx={{}}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="총무"
+              name="host"
+              autoComplete="text"
+              autoFocus
+              value={host}
+              onChange={payOnChange}
+              onKeyDown={preventEnterKey}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="maxMoney"
+              label="총금액"
+              type="text"
+              autoComplete="text"
+              value={maxMoney}
+              onChange={payOnChange}
+              onKeyDown={preventEnterKey}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="minMoney"
+              label="남은금액"
+              type="text"
+              autoComplete="text"
+              value={minMoney}
+              onChange={payOnChange}
+              onKeyDown={preventEnterKey}
+            />
+
+            <Box sx={{ position: "relative" }}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="member"
+                label="멤버"
+                type="text"
+                autoComplete="text"
+                onChange={onPreview}
+                value={memberValue}
+                onKeyDown={payOnKeyDown}
+              />
+              {preview && (
+                <PreviewChoice>
+                  <div onClick={() => handlePreviewClick("blue")}>
+                    <ColorCard color="blue" CardValue={memberValue} />
+                  </div>
+                  <div onClick={() => handlePreviewClick("red")}>
+                    <ColorCard color="red" CardValue={memberValue} />
+                  </div>
+                  <div onClick={() => handlePreviewClick("yellow")}>
+                    <ColorCard color="yellow" CardValue={memberValue} />
+                  </div>
+                  <div onClick={() => handlePreviewClick("green")}>
+                    <ColorCard color="green" CardValue={memberValue} />
+                  </div>
+                </PreviewChoice>
+              )}
+
+              <PreviewList>
+                {member.map((member, idx) => (
+                  <div key={idx} onClick={() => handleDeleteClick()}>
+                    <ColorCard CardValue={member.value} color={member.color} />
+                  </div>
+                ))}
+              </PreviewList>
+            </Box>
+            <RadioGroup
+              row
+              aria-labelledby="demo-row-radio-buttons-group-label"
+              name="row-radio-buttons-group"
+            >
+              <FormControlLabel
+                value="완료"
+                control={<Radio onChange={payOnChange} />}
+                label="완료"
+              />
+              <FormControlLabel
+                value="진행중"
+                control={<Radio onChange={payOnChange} />}
+                label="진행중"
+              />
+            </RadioGroup>
+            <PayBtn>
+              <Button
+                variant="contained"
+                disableElevation
+                sx={{ bgcolor: "primary.main" }}
+              >
+                추가하기
+              </Button>
+
+              <Button
+                variant="contained"
+                disableElevation
+                sx={{ bgcolor: "text.secondary" }}
+                onClick={() => navigate(-1)}
+              >
+                뒤로가기
+              </Button>
+            </PayBtn>
+          </Box>
+        </Box>
+      </Container>
+      {/* <Wrap>
         <PayForm onSubmit={paySubmit}>
           <FormInner>
             <InputBox>
@@ -263,7 +393,7 @@ const PayCreate = () => {
             </PaySubmit>
           </PayBtn>
         </PayForm>
-      </Wrap>
+      </Wrap> */}
     </>
   );
 };

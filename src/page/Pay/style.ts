@@ -34,6 +34,7 @@ export const PayUl = styled.ul`
 `;
 export const PayList = styled.li`
   width: 100%;
+  height: 135px;
   background-color: #fff;
   padding: 15px;
   box-shadow: 3px 2px 12px rgba(0, 0, 0, 0.2);
