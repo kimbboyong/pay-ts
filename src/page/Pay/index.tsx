@@ -60,7 +60,7 @@ const Pay = () => {
             {data &&
               data.map((payment) => (
                 <PayList
-                  onClick={() => handleListModal(payment.id)}
+                  onClick={() => navigate(`/pay/read/${payment.id}`)}
                   key={payment.id}
                 >
                   <RadioState>

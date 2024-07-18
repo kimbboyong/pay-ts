@@ -6,7 +6,6 @@ import {
   FormInner,
   PayBtn,
   PayForm,
-  PaySubmit,
   PreviewList,
 } from "../PayCreate/style";
 
@@ -18,19 +17,21 @@ import { useEffect, useState } from "react";
 
 import ColorCard from "../../../../components/ColorCard";
 import { InputScroll } from "../PayCalc/style";
+import { Button } from "@mui/material";
+import useUserInfo from "../../../../hooks/useUserInfo";
+import { StateBox } from "./stlye";
 
 interface Param {
   id: string;
 }
-
 const PayRead = () => {
   const navigate = useNavigate();
   const params = useParams<Record<string, string | undefined>>();
   const param: Param = { id: params.id ?? "" };
 
-  const [readData, setReadData] = useState<PayDataType | undefined>(undefined);
-
   const { data, error, isLoading } = useGetPayments();
+  const userData = useUserInfo();
+  const [readData, setReadData] = useState<PayDataType | undefined>(undefined);
 
   useEffect(() => {
     if (data && param.id) {
@@ -38,8 +39,6 @@ const PayRead = () => {
       setReadData(filterData);
     }
   }, [data]);
-
-  console.log(readData);
 
   return (
     <>
@@ -88,34 +87,17 @@ const PayRead = () => {
             <InputBox>
               <label>상태</label>
               <Divide>
-                <RadioBox>
-                  <input
-                    type="radio"
-                    id="complete"
-                    name="radioState"
-                    value="완료"
-                    checked={readData?.radioState === "완료" ? true : false}
-                    disabled
-                  />
-                  <label htmlFor="complete">완료</label>
-                </RadioBox>
-                <RadioBox>
-                  <input
-                    type="radio"
-                    id="Incomplete"
-                    name="radioState"
-                    value="진행중"
-                    checked={readData?.radioState === "진행중" ? true : false}
-                    disabled
-                  />
-                  <label htmlFor="Incomplete">진행중</label>
-                </RadioBox>
+                {readData?.radioState === "완료" ? (
+                  <ColorCard CardValue="완료" color="blue" />
+                ) : (
+                  <ColorCard CardValue="진행중" color="red" />
+                )}
               </Divide>
             </InputBox>
             <InputScroll>
               {readData
                 ? readData.paymentArr
-                    .filter((pay) => pay.addPayName && pay.addPay) // 필터링 조건 추가
+                    .filter((pay) => pay.addPayName && pay.addPay)
                     .map((pay) => (
                       <InputBox key={pay.addPayName}>
                         <label className="calcLabel">추가로 사용한 금액</label>
@@ -137,13 +119,33 @@ const PayRead = () => {
             </InputScroll>
           </FormInner>
           <PayBtn>
-            <PaySubmit
-              type="button"
-              className="backBtn"
+            {readData?.userUid === userData?.uid ? (
+              <>
+                <Button
+                  variant="contained"
+                  disableElevation
+                  sx={{ bgcolor: "primary.main" }}
+                  onClick={() => navigate(`/pay/${readData?.id}`)}
+                >
+                  수정
+                </Button>
+                <Button
+                  variant="contained"
+                  disableElevation
+                  sx={{ bgcolor: "error.main" }}
+                >
+                  삭제
+                </Button>
+              </>
+            ) : null}
+            <Button
+              variant="contained"
+              disableElevation
+              sx={{ bgcolor: "text.secondary" }}
               onClick={() => navigate(-1)}
             >
               뒤로가기
-            </PaySubmit>
+            </Button>
           </PayBtn>
         </PayForm>
       </Wrap>
